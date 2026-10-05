@@ -24,6 +24,61 @@ app.get('/students', (req, res) => {
     res.json(results);
   });
 });
+
+// POST /students — receives new student data and inserts into MySQL
+app.post('/students', (req, res) => {
+  const { first_name, last_name, grade_level } = req.body;
+ 
+  // Validation — reject if any field is missing
+  if (!first_name || !last_name || !grade_level) {
+    return res.status(400).json({
+      error: 'first_name, last_name, and grade_level are required'
+    });
+  }
+ 
+  const sql = 'INSERT INTO students (first_name, last_name, grade_level) VALUES (?, ?, ?)';
+ 
+  db.query(sql, [first_name, last_name, grade_level], (error, results) => {
+    if (error) {
+      console.error('Error adding student:', error);
+      return res.status(500).json({ error: 'Failed to add student' });
+    }
+ 
+    res.status(201).json({
+      message: 'Student added successfully',
+      studentId: results.insertId
+    });
+  });
+});
+
+// GET /students/:id/assignments — returns one student's assignments and scores
+app.get('/students/:id/assignments', (req, res) => {
+  const { id } = req.params;
+  const sql = `
+    SELECT
+      assignments.assignment_name,
+      assignments.due_date,
+      assignments.max_points,
+      student_assignments.score,
+      student_assignments.submitted_date,
+      classes.class_name
+    FROM assignments
+    JOIN classes ON assignments.class_id = classes.id
+    LEFT JOIN student_assignments
+      ON student_assignments.assignment_id = assignments.id
+      AND student_assignments.student_id = ?
+    WHERE assignments.class_id IN (
+      SELECT class_id FROM enrollments WHERE student_id = ?
+    )
+  `;
+  db.query(sql, [id, id], (error, results) => {
+    if (error) {
+      console.error('Error getting assignments:', error);
+      return res.status(500).json({ error: 'Failed to get assignments' });
+    }
+    res.json(results);
+  });
+});
  
 // GET /classes — returns all classes from MySQL
 app.get('/classes', (req, res) => {
