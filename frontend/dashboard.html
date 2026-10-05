@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ERA Academy - Dashboard</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <nav class="navbar width">
+    <div class="nav-container">
+      <div class="logo">ERA Academy</div>
+      <div class="nav-right">
+        <span id="dashboard-user" class="nav-user visible"></span>
+        <button class="logout-btn" onclick="logout()">Log Out</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="dashboard">
+    <div class="dashboard-container">
+
+      <h1 id="welcome-heading" class="dashboard-heading">Welcome back!</h1>
+      <p id="student-grade" class="dashboard-subheading"></p>
+
+      <!-- TAB NAVIGATION -->
+      <div class="tab-nav">
+        <button class="tab-btn active" onclick="switchTab('classes', this)">My Classes</button>
+        <button class="tab-btn" onclick="switchTab('grades', this)">My Grades</button>
+        <button class="tab-btn" onclick="switchTab('assignments', this)">My Assignments</button>
+        <button class="tab-btn" onclick="switchTab('attendance', this)">My Attendance</button>
+      </div>
+
+      <!-- TAB CONTENT -->
+      <div class="dashboard-card">
+
+        <div id="tab-classes" class="tab-content active">
+          <h2 class="dashboard-card-title">My Classes</h2>
+          <div id="classes-content"><p class="loading-text">Loading...</p></div>
+        </div>
+
+        <div id="tab-grades" class="tab-content">
+          <h2 class="dashboard-card-title">My Grades</h2>
+          <div id="grades-content"><p class="loading-text">Loading...</p></div>
+        </div>
+
+        <div id="tab-assignments" class="tab-content">
+          <h2 class="dashboard-card-title">My Assignments</h2>
+          <div id="assignments-content"><p class="loading-text">Loading...</p></div>
+        </div>
+
+        <div id="tab-attendance" class="tab-content">
+          <h2 class="dashboard-card-title">My Attendance</h2>
+          <div id="attendance-content"><p class="loading-text">Loading...</p></div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/dashboard.js"></script>
+
+</body>
+</html>

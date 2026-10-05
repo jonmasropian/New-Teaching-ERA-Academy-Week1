@@ -51,6 +51,103 @@ app.post('/students', (req, res) => {
   });
 });
 
+// POST /users — creates a new user account
+app.post('/users', (req, res) => {
+  const { first_name, last_name, email, password } = req.body;
+ 
+  if (!first_name || !last_name || !email || !password) {
+    return res.status(400).json({ error: 'first_name, last_name, email, and password are required' });
+  }
+ 
+  if (password.length < 8) {
+    return res.status(400).json({ error: 'Password must be at least 8 characters long' });
+  }
+ 
+  const specialChar = /[!@#$%]/;
+  if (!specialChar.test(password)) {
+    return res.status(400).json({ error: 'Password must include at least one special character: ! @ # $ %' });
+  }
+ 
+  // Auto-link to students table by matching first + last name
+  const findStudent = 'SELECT id FROM students WHERE first_name = ? AND last_name = ?';
+  db.query(findStudent, [first_name, last_name], (err, students) => {
+    if (err) return res.status(500).json({ error: 'Failed to create user' });
+ 
+    const student_id = students.length > 0 ? students[0].id : null;
+ 
+    const sql = 'INSERT INTO users (first_name, last_name, email, password, student_id) VALUES (?, ?, ?, ?, ?)';
+    db.query(sql, [first_name, last_name, email, password, student_id], (error, results) => {
+      if (error) {
+        // Same email used twice — the UNIQUE rule on the email column blocked it
+        if (error.code === 'ER_DUP_ENTRY') {
+          return res.status(409).json({ error: 'That email is already registered' });
+        }
+        console.error('Error creating user:', error);
+        return res.status(500).json({ error: 'Failed to create user' });
+      }
+ 
+      res.status(201).json({
+        message: 'User created successfully',
+        userId: results.insertId,
+        student_id: student_id
+      });
+    });
+  });
+});
+ 
+// GET /users — returns all users WITHOUT passwords
+app.get('/users', (req, res) => {
+  const sql = 'SELECT id, first_name, last_name, email FROM users';
+  db.query(sql, (error, results) => {
+    if (error) return res.status(500).json({ error: 'Failed to get users' });
+    res.json(results);
+  });
+});
+
+// POST /login — checks email and password against the users table
+app.post('/login', (req, res) => {
+  const { email, password } = req.body;
+ 
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email and password are required' });
+  }
+ 
+  if (password.length < 8) {
+    return res.status(400).json({ error: 'Password must be at least 8 characters long' });
+  }
+ 
+  const specialChar = /[!@#$%]/;
+  if (!specialChar.test(password)) {
+    return res.status(400).json({ error: 'Password must include at least one special character: ! @ # $ %' });
+  }
+ 
+  const sql = 'SELECT * FROM users WHERE email = ?';
+  db.query(sql, [email], (error, results) => {
+    if (error) {
+      console.error('Login query error:', error);
+      return res.status(500).json({ error: 'Something went wrong' });
+    }
+ 
+    if (results.length === 0) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
+ 
+    const user = results[0];
+ 
+    if (user.password !== password) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
+ 
+    // Login successful — return the name and student_id for the frontend
+    res.status(200).json({
+      message: 'Login successful',
+      first_name: user.first_name,
+      last_name: user.last_name,
+      student_id: user.student_id
+    });
+  });
+});
+
 // GET /students/:id/assignments — returns one student's assignments and scores
 app.get('/students/:id/assignments', (req, res) => {
   const { id } = req.params;

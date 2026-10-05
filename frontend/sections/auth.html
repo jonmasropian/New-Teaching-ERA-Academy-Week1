@@ -1,0 +1,100 @@
+<!-- AUTH SECTION -->
+<section class="auth">
+  <div class="auth-container">
+    
+    <h2 class="auth-heading">Student &amp; Parent Portal</h2>
+    <p class="auth-subheading">Create an account or log in to access the student portal</p>
+    
+    <div class="auth-forms">
+      
+      <!-- SIGNUP FORM -->
+      <div class="auth-card">
+        <h3>Sign Up</h3>
+        <form id="signup-form" class="auth-form">
+          
+          <div class="form-group">
+            <label for="signup-firstname">First Name</label>
+            <input 
+              type="text" 
+              id="signup-firstname" 
+              name="firstname" 
+              placeholder="Enter your first name"
+              required
+            >
+          </div>
+          
+          <div class="form-group">
+            <label for="signup-lastname">Last Name</label>
+            <input 
+              type="text" 
+              id="signup-lastname" 
+              name="lastname" 
+              placeholder="Enter your last name"
+              required
+            >
+          </div>
+          
+          <div class="form-group">
+            <label for="signup-email">Email</label>
+            <input 
+              type="email" 
+              id="signup-email" 
+              name="email" 
+              placeholder="Enter your email"
+              required
+            >
+          </div>
+          
+          <div class="form-group">
+            <label for="signup-password">Password</label>
+            <input 
+              type="password" 
+              id="signup-password" 
+              name="password" 
+              placeholder="Create a password"
+              minlength="8"
+              required
+            >
+            <small class="password-hint">Must be at least 8 characters and include a special character (! @ # $ %)</small>
+          </div>
+          
+          <button type="submit" class="auth-btn">Create Account</button>
+          
+        </form>
+      </div>
+      
+      <!-- LOGIN FORM -->
+      <div class="auth-card">
+        <h3>Log In</h3>
+        <form id="login-form" class="auth-form">
+          
+          <div class="form-group">
+            <label for="login-email">Email</label>
+            <input 
+              type="email" 
+              id="login-email" 
+              name="email" 
+              placeholder="Enter your email"
+              required
+            >
+          </div>
+          
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <input 
+              type="password" 
+              id="login-password" 
+              name="password" 
+              placeholder="Enter your password"
+              required
+            >
+          </div>
+          
+          <button type="submit" class="auth-btn">Log In</button>
+          
+        </form>
+      </div>
+      
+    </div>
+  </div>
+</section>
